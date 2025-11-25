@@ -16,19 +16,24 @@ export const basicPromptStreamUseCase = async (
   options?: Options,
 ) => {
   const { prompt, files = [] } = basicPromptDto;
+
+  //const firstImage = files[0];
+
   // const image = await ai.files.upload({
-  //   file: new Blob([firstImage.buffer], { type: firstImage.mimetype }), // string
+  //   file: new Blob([new Uint8Array(firstImage.buffer)], { type: firstImage.mimetype }), // string
   // });
 
   const images = await Promise.all(
     files.map((file) => {
       return ai.files.upload({
-        file: new Blob([file.buffer], {
+        file: new Blob([new Uint8Array(file.buffer)], {
           type: file.mimetype.includes('image') ? file.mimetype : 'image/jpg',
         }), // string
       });
     }),
   );
+
+
 
   const {
     model = 'gemini-2.0-flash',
@@ -48,7 +53,7 @@ export const basicPromptStreamUseCase = async (
         prompt,
         // Imágenes o archivos
         // createPartFromUri(image.uri ?? '', image.mimeType ?? ''),
-        ...images.map((image) =>
+         ...images.map((image) =>
           createPartFromUri(image.uri!, image.mimeType!),
         ),
       ]),
