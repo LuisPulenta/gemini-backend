@@ -32,7 +32,7 @@ export const geminiUploadFiles = async (
         : file.mimetype;
 
       return ai.files.upload({
-        file: new Blob([file.buffer], {
+        file: new Blob([new Uint8Array(file.buffer)], {
           type,
         }),
       });
